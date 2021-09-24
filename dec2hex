@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# This script converts a decimal number to a hexadecimal number.
+
+usage()
+{
+    cat <<EOF
+usage: ${0##*/} <int>
+
+Call on a decimal number to convert to hexadecimal. Can also accept argument
+from stdin.
+EOF
+}
+
+# Too many arguments
+if [ $# -ge 1 ]; then
+    usage
+    exit 1
+# No argument, check stdin
+elif [ $# -eq 0 ]; then
+    if test -t 0; then
+        usage
+        exit 1
+    fi
+    decimal=$(cat /dev/stdin)    
+else
+    decimal="$1"
+fi
+
+if expr "$decimal" : ".*[^[:digit:]]" 1>/dev/null; then
+    usage
+    exit 1
+fi
+
+printf "0x%x\n" $decimal
+
